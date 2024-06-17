@@ -39,7 +39,7 @@ The number of rows corresponds to the number of constraints in the circuit.
 
 So, our matrices for $x^3 + x^2 + y^2 = 67$ are:
 
-$$
+```math
 A = \begin{pmatrix}
 a{}_{1,1} & a{}_{1,out} & a{}_{1,x} & a{}_{1,y} & a{}_{1,v1inter} & a{}_{1,v1} & a{}_{1,v2} \\
 a{}_{2,1} & a{}_{2,out} & a{}_{2,x} & a{}_{2,y} & a{}_{2,v1inter} & a{}_{2,v1}  & a{}_{2,v2} \\
@@ -56,9 +56,9 @@ a{}_{4,1} & a{}_{4,out} & a{}_{4,x} & a{}_{4,y} & a{}_{4,v1inter} & a{}_{4,v1} &
 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
 \end{pmatrix}
 
-$$
+```
 
-$$
+```math
 B = \begin{pmatrix}
 b{}_{1,1} & b{}_{1,out} & b{}_{1,x} & b{}_{1,y} & b{}_{1,v1inter} & b{}_{1,v1} & b{}_{1,v2} \\
 b{}_{2,1} & b{}_{2,out} & b{}_{2,x} & b{}_{2,y} & b{}_{2,v1inter} & b{}_{2,v1}  & b{}_{2,v2} \\
@@ -75,9 +75,9 @@ b{}_{4,1} & b{}_{4,out} & b{}_{4,x} & b{}_{4,y} & b{}_{4,v1inter} & b{}_{4,v1} &
 0 & 0 & 0 & 1 & 0 & 0 & 0 \\
 \end{pmatrix}
 
-$$
+```
 
-$$
+```math
 C = \begin{pmatrix}
 c{}_{1,1} & c{}_{1,out} & c{}_{1,x} & c{}_{1,y} & c{}_{1,v1inter} & c{}_{1,v1} & c{}_{1,v2} \\
 c{}_{2,1} & c{}_{2,out} & c{}_{2,x} & c{}_{2,y} & c{}_{2,v1inter} & c{}_{2,v1}  & c{}_{2,v2} \\
@@ -94,9 +94,9 @@ c{}_{4,1} & c{}_{4,out} & c{}_{4,x} & c{}_{4,y} & c{}_{4,v1inter} & c{}_{4,v1} &
 67 & 0 & 0 & 0 & 0 & -1 & -1 \\
 \end{pmatrix}
 
-$$
+```
 
-$$
+```math
 w = \begin{pmatrix}
 1 & out & x & y & v1inter & v1 & v2 \\
 \end{pmatrix}
@@ -104,7 +104,7 @@ w = \begin{pmatrix}
 \begin{pmatrix}
 1 & 0 & 3 & 2 & 9 & 27 & 36 \\
 \end{pmatrix}
-$$
+```
 
 $$
 A \mathbf{w} \circ B \mathbf{w} = C \mathbf{w}
