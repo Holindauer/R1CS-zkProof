@@ -10,6 +10,8 @@ class Verifier:
         else:
             print("Proof is invalid")
 
+        return verified
+    
     def read_proof(self, proof_file):
         with open(proof_file, "r") as f:
             lines = f.readlines()

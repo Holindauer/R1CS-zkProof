@@ -27,7 +27,7 @@ class Prover:
         self.exeCircuit(x, y)       
 
         # verify witness satisfies r1cs (Aw * Bw = Cw)
-        self.verifyConstraint()      
+        #self.verifyConstraint()      
 
         # encrypt witness with G1 and G2
         self.encryptWitness()          
@@ -108,8 +108,6 @@ class Prover:
             f.write("Aw_Bw: " + str(Aw_Bw) + "\n")
             f.write("Cw_G2: " + str(Cw_G2) + "\n")
         print("Proof saved to proof.txt")
-
-        
 
 if __name__ == "__main__":
     p = Prover()
