@@ -1,32 +1,29 @@
 pragma circom 2.1.9;
 
-// algebraic circuit for: x^3 + 4x^2 + y^2 = 14
+// algebraic circuit for: x^3 + 4x^2 + y^2 = 67
 
 template Polynomial(){
 
     signal input x, y;
 
     // x^3 term
-    signal term_1, term_1_inter;
-
-    term_1_inter <== x * x;
-    term_1 <== x * term_1_inter;
+    signal v_1, v_1_inter;
+    v_1_inter <== x * x;
+    v_1 <== x * v_1_inter;
 
     // 4x^2 term
-    signal term_2, term_2_inter;
-
-    term_2_inter <== 4 * x;
-    term_2 <== term_2_inter * x;
+    signal v_2, v_2_inter;
+    v_2_inter <== 4 * x;
+    v_2 <== v_2_inter * x;
 
     // y^2 term
-    signal term_3;
-
-    term_3 <== y * y;
+    signal v_3;
+    v_3 <== y * y;
 
     // sum of all terms
     signal output out;
 
-    out <== term_1 + term_2 + term_3 - 14;
+    out <== v_1 + v_2 + v_3 - 67;
 }
 
 component main = Polynomial();

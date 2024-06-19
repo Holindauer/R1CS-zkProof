@@ -7,26 +7,46 @@ The specific polynomial constaint used is placed on the variables $x$ and $y$ as
 
 # Rank 1 Constaint Systems
 
+### Algebraic Circuit Representation
+
 The polynomial constaint $x^3 + 4x^2 + y^2 = 67$ is an algebraic circuit. given $x=3$ and $y=2$, the circuit is solved. 
 
-We wish to prove that we have a valid solution to this constraint without revealing it. Before we can do this, we must convert it to a rank 1 constraint system. However, first we must rewrite the constaint such that it only has one multiplication per polynomial constraint. This is also illustrated with the following [circom template](polynomial.circom): 
+We wish to prove that we have a valid solution to this constraint without revealing it. Before we can do this, we must convert it to a rank 1 constraint system. However, in order to do that first we must rewrite the constaint such that it only has one multiplication per polynomial constraint:
 
-    v1_inter = x * x
-    v1 = v1_inter * x   
-    v2 = 4x * x
-    -v1 -v2 + 67 = y * y // additions moved to left side. was 67 = v1 + v2 + y^2
+$$
+v1{}_{Intermediate} = x * x  
+$$
+
+$$
+v1 = v1{}_{Intermediate} * x     
+$$
+$$
+v2 = 4x * x
+$$
+$$
+-v1 -v2 + 67 = y * y
+$$
+
+This is also illustrated with the following [circom template](polynomial.circom).
+
+### The Witness
 
 The *witness* is a 1xn vector that contains the values of all the input variables, output variable, and the intermediate values. It is a way to show that you have executed the entire circuit with correct execution and output. 
 
 For the above circuit, the following is a valid witness
 
-    witness:
 
-    w = [1, 0, 3, 2, 9, 27, 36]
+```math
+w = \begin{pmatrix} 1, 0, 3, 2, 9, 27, 36 \end{pmatrix}
+```
 
-    where:
+where:
+
+```math
+w = \begin{pmatric} constant, out, x, y, v_1_inter, v_1, v_2 \end{pmatrix}
+```
     
-    w = [constant, out, x, y, v_1_inter, v_1, v_2] // constant is always 1 for scalar additions
+NOTE: the constant is always 1 for scalar additions
 
 
 The goal is to represent the algebraic circuit as the following systems of equations:
@@ -124,7 +144,7 @@ Where: $G_1$, $G_2$, and $G_T$ can all be different groups. However, they must s
 
 $$ e(aG_1, bG_2) = e(G_1, abG_2) = e(abG_1, G_2) $$
 
-Where: the codomain of $e$ is the target group $G_T$.
+Where: the codomain of $e$ is the target group $G_T$. $a$ and $b$ are constants.
 
 In this context, $G_1$, $G_2$, and $G_T$ are all different elliptic curves over a finite field.
 

@@ -22,11 +22,24 @@ class Prover:
                            [67,0,0,0,0,-1,-1]])
     
     def genProof(self, x, y):
-        self.exeCircuit(x, y)        # execute circuit and generate witness
-        self.verifyConstraint()      # verify witness satisfies r1cs (Aw * Bw = Cw)    
-        self.encryptWitness()        # encrypt witness with G1 and G2
-        out_vectors = self.dotMats() # dot each row of matrices with encrypted witness
-        print(out_vectors[0])
+        
+        # execute circuit and generate witness
+        self.exeCircuit(x, y)       
+
+        # verify witness satisfies r1cs (Aw * Bw = Cw)
+        self.verifyConstraint()      
+
+        # encrypt witness with G1 and G2
+        self.encryptWitness()          
+
+        # dot each row of matrices with encrypted witness
+        Aw, Bw, Cw = self.dotMats()    
+
+        # bilinear pairings
+        Aw_Bw, Cw_G2 = self.blPairing(Aw, Bw, Cw) 
+
+        print("Aw_Bw: ", Aw_Bw)
+        print("Cw_G2: ", Cw_G2)
 
     def exeCircuit(self, x, y):
         # exe algebraic circuit
@@ -49,7 +62,6 @@ class Prover:
         self.w_G2 = np.array([self.safe_mul(G2, int(i)) for i in self.w])
 
     def dotMats(self):
-
         # eliptic curve dot product (witness dot matrix row)
         def dot(row, wit):  
             mul_pts = [self.safe_mul(w_i, int(A_i)) for A_i, w_i in zip(row, wit)]
@@ -66,6 +78,18 @@ class Prover:
             out_vectors.append(encypted_dot)
 
         return out_vectors
+    
+    @staticmethod
+    def blPairing(Aw, Bw, Cw):  # NOTE this func is slow bc G12 pts are huge
+        
+        # bilinear pairings for lhs and rhs of r1cs exe
+        Aw_Bw = [pairing(b, a) for a, b in zip(Aw, Bw)]
+
+        # bilinear pairings for Cw and G2 list
+        G2_list = [G2] * len(Cw)
+        Cw_G2 = [pairing(g, c) for c, g in zip(Cw, G2_list)]
+
+        return Aw_Bw, Cw_G2
         
     @staticmethod
     def safe_mul(point, scalar):
@@ -79,24 +103,7 @@ class Prover:
             return multiply(point, scalar) #directly mul  
 
 
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     p = Prover()
 
     p.genProof(3, 2)
-
-
-
-    # Example usage
-    negative_scalar = -3
-    point = curve.G1  # Assuming G1 is the generator point of bn128 defined in your context
-    result = Prover.safe_mul(point, negative_scalar)
-    print("Resulting point:", result)
