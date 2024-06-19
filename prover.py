@@ -20,7 +20,7 @@ class Prover:
                            [0,0,0,0,0,1,0],
                            [0,0,0,0,0,0,1],
                            [67,0,0,0,0,-1,-1]])
-    
+        
     def genProof(self, x, y):
         
         # execute circuit and generate witness
@@ -38,8 +38,8 @@ class Prover:
         # bilinear pairings
         Aw_Bw, Cw_G2 = self.blPairing(Aw, Bw, Cw) 
 
-        print("Aw_Bw: ", Aw_Bw)
-        print("Cw_G2: ", Cw_G2)
+        # save proof to txt file
+        self.save_proof(Aw_Bw, Cw_G2)
 
     def exeCircuit(self, x, y):
         # exe algebraic circuit
@@ -78,7 +78,7 @@ class Prover:
             out_vectors.append(encypted_dot)
 
         return out_vectors
-    
+        
     @staticmethod
     def blPairing(Aw, Bw, Cw):  # NOTE this func is slow bc G12 pts are huge
         
@@ -90,7 +90,7 @@ class Prover:
         Cw_G2 = [pairing(g, c) for c, g in zip(Cw, G2_list)]
 
         return Aw_Bw, Cw_G2
-        
+            
     @staticmethod
     def safe_mul(point, scalar):
         # eliptic curve scalar mul w/ negative scalar check and encoding
@@ -101,9 +101,16 @@ class Prover:
             return negated_point
         else:
             return multiply(point, scalar) #directly mul  
+        
+    @staticmethod
+    def save_proof(Aw_Bw, Cw_G2):
+        with open("proof.txt", "w") as f:
+            f.write("Aw_Bw: " + str(Aw_Bw) + "\n")
+            f.write("Cw_G2: " + str(Cw_G2) + "\n")
+        print("Proof saved to proof.txt")
 
+        
 
 if __name__ == "__main__":
     p = Prover()
-
     p.genProof(3, 2)
