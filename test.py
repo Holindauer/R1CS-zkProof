@@ -10,10 +10,10 @@ def run_test(x, y, expected: bool):
     v = Verifier()
 
     # generate proof for valid solution (save to proof.txt)
-    p.genProof(x, y)
+    Aw_G1, Bw_G2, Cw_G1 = p.genProof(x, y)
 
     # verify proof for valid solution
-    verified = v.verifyProof("proof.txt")
+    verified = v.verifyProof(Aw_G1, Bw_G2, Cw_G1)
 
     assert verified == expected, f"Test failed for x={x}, y={y} expected={expected} got={verified}"
 

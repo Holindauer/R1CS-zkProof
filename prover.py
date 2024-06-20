@@ -1,8 +1,16 @@
-from py_ecc.bn128 import G1, G2, Z1, pairing, add, multiply, eq, bn128_curve as curve
+from py_ecc.bn128 import G1, G2, Z1, add, multiply
 from functools import reduce
 import numpy as np
 
+
 class Prover:
+    '''
+    Polynomial constaint: x^3 + 4x^2 + y^2 = 67
+
+    Prover.genProof() executes algebraic circuit for constraint, creates witness, 
+    makes encrypted versions of witness w/ G1 and G2, multiplies encrypted witness 
+    w/ R1CS matrices (Aw, Bw, Cw) to generate proof
+    '''
     def __init__(self):
 
         # R1CS matrices (Aw * Bw = Cw) for x^3 + 4x^2 + y^2 = 67
@@ -22,24 +30,10 @@ class Prover:
                            [67,0,0,0,0,-1,-1]])
         
     def genProof(self, x, y):
-        
-        # execute circuit and generate witness
-        self.exeCircuit(x, y)       
-
-        # verify witness satisfies r1cs (Aw * Bw = Cw)
-        #self.verifyConstraint()      
-
-        # encrypt witness with G1 and G2
-        self.encryptWitness()          
-
-        # dot each row of matrices with encrypted witness
-        Aw, Bw, Cw = self.dotMats()    
-
-        # bilinear pairings
-        Aw_Bw, Cw_G2 = self.blPairing(Aw, Bw, Cw) 
-
-        # save proof to txt file
-        self.save_proof(Aw_Bw, Cw_G2)
+        self.exeCircuit(x, y)              # execute circuit and generate witness
+        # self.verifyConstraint()            # verify witness satisfies r1cs (Aw * Bw = Cw)
+        self.encryptWitness()              # encrypt witness with G1 and G2    
+        return self.dotEncryptedWitness()  # mul matrs w/ encrypted witness --> [Aw_G1, Bw_G2, Cw_G1]
 
     def exeCircuit(self, x, y):
         # exe algebraic circuit
@@ -61,7 +55,7 @@ class Prover:
         self.w_G1 = np.array([self.safe_mul(G1, int(i)) for i in self.w])
         self.w_G2 = np.array([self.safe_mul(G2, int(i)) for i in self.w])
 
-    def dotMats(self):
+    def dotEncryptedWitness(self):
         # eliptic curve dot product (witness dot matrix row)
         def dot(row, wit):  
             mul_pts = [self.safe_mul(w_i, int(A_i)) for A_i, w_i in zip(row, wit)]
@@ -80,18 +74,6 @@ class Prover:
         return out_vectors
         
     @staticmethod
-    def blPairing(Aw, Bw, Cw):  # NOTE this func is slow bc G12 pts are huge
-        
-        # bilinear pairings for lhs and rhs of r1cs exe
-        Aw_Bw = [pairing(b, a) for a, b in zip(Aw, Bw)]
-
-        # bilinear pairings for Cw and G2 list
-        G2_list = [G2] * len(Cw)
-        Cw_G2 = [pairing(g, c) for c, g in zip(Cw, G2_list)]
-
-        return Aw_Bw, Cw_G2
-            
-    @staticmethod
     def safe_mul(point, scalar):
         # eliptic curve scalar mul w/ negative scalar check and encoding
         if scalar < 0:
@@ -103,10 +85,11 @@ class Prover:
             return multiply(point, scalar) #directly mul  
         
     @staticmethod
-    def save_proof(Aw_Bw, Cw_G2):
+    def save_proof(Aw_G1, Bw_G2, Cw_G1):
         with open("proof.txt", "w") as f:
-            f.write("Aw_Bw: " + str(Aw_Bw) + "\n")
-            f.write("Cw_G2: " + str(Cw_G2) + "\n")
+            f.write("Aw_Bw: " + str([tuple(e) for e in Aw_G1]) + "\n") # [np arrs] -> [tuples]
+            f.write("Bw_G2: " + str([tuple(e) for e in Bw_G2]) + "\n")
+            f.write("Cw_G1: " + str([tuple(e) for e in Cw_G1]) + "\n")
         print("Proof saved to proof.txt")
 
 if __name__ == "__main__":

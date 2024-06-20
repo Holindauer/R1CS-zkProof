@@ -20,9 +20,11 @@ $$
 $$
 v1 = v1{}_{Intermediate} * x     
 $$
+
 $$
 v2 = 4x * x
 $$
+
 $$
 -v1 -v2 + 67 = y * y
 $$
@@ -43,7 +45,7 @@ w = \begin{pmatrix} 1, 0, 3, 2, 9, 27, 36 \end{pmatrix}
 where:
 
 ```math
-w = \begin{pmatric} constant, out, x, y, v_1_inter, v_1, v_2 \end{pmatrix}
+w = \begin{pmatrix} constant, out, x, y, v1{}_{intermediate}, v_1, v_2 \end{pmatrix}
 ```
     
 NOTE: the constant is always 1 for scalar additions
