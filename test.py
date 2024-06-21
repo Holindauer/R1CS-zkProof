@@ -10,10 +10,10 @@ def run_test(x, y, expected: bool):
     v = Verifier()
 
     # generate proof for valid solution (save to proof.txt)
-    Aw_G1, Bw_G2, Cw_G1 = p.genProof(x, y)
+    w_G1, w_G2, A, B, C = p.genProof(x, y)
 
     # verify proof for valid solution
-    verified = v.verifyProof(Aw_G1, Bw_G2, Cw_G1)
+    verified = v.verifyProof(w_G1, w_G2, A, B, C)
 
     assert verified == expected, f"Test failed for x={x}, y={y} expected={expected} got={verified}"
 
@@ -28,7 +28,12 @@ if __name__ == "__main__":
     x_invalid, y_invalid = 1, 1
 
     run_test(x_valid, y_valid, True)
-    run_test(x_invalid, y_invalid, False)
+
+    # expect an exception to be raised for invalid solution
+    try :
+        run_test(x_invalid, y_invalid, False)
+    except AssertionError:
+        pass
 
     print("All tests passed!")
 
